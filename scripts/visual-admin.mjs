@@ -1,0 +1,16 @@
+import { chromium } from "playwright";
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
+await p.goto("http://127.0.0.1:3000/admin/login", { waitUntil: "networkidle" });
+await p.fill('input[type="email"]', "admin@imn.group");
+await p.fill('input[type="password"]', "Admin@12345");
+await p.click('button[type="submit"]');
+await p.waitForTimeout(2500);
+await p.goto("http://127.0.0.1:3000/admin/settings", { waitUntil: "networkidle" });
+await p.waitForTimeout(1500);
+const el = await p.$("text=Typography");
+await el?.scrollIntoViewIfNeeded();
+await p.waitForTimeout(600);
+await p.screenshot({ path: "/tmp/admin-typo.png" });
+console.log("typography card found:", !!el);
+await b.close();
